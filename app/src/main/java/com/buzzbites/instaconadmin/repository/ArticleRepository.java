@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.buzzbites.instaconadmin.constant.AppConstant;
 import com.buzzbites.instaconadmin.data.ProductItem;
 import com.buzzbites.instaconadmin.data.response.ApiResponse;
 import com.buzzbites.instaconadmin.data.response.Rating;
@@ -47,21 +48,17 @@ public class ArticleRepository {
             Gson gson = new Gson();
             isLoading.postValue(false);
             Log.d(TAG, "onResponse response:: " + response);
-            Log.d(TAG, ":: " + response.raw());
-            String dd = response.raw().toString().replace("Response","");
-            Log.d(TAG, ":: " + dd);
-            ResponseCallValue callValue = gson.fromJson(response.raw().toString().replace("Response",""), ResponseCallValue.class);
-            //Log.d(TAG, "callValue :: " + callValue.getUrl());
+            String apiUrl = ""+response.raw().request().url();
+            Log.d(TAG, "apiUrl :: " + apiUrl);
+            String apiEndPoint = apiUrl.replace(AppConstant.BASE_URL,"");
 
             if (response.body() != null) {
                 //data.setValue(response.body());
-                Log.d(TAG, "articles total result:: " + response.body().getRating());
-                Log.d(TAG, "articles size:: " + response.body().getTitle());
-
-
-                Rating rating = gson.fromJson(response.body().getRating().toString(), Rating.class);
-                Log.d(TAG, "rating :: " + rating.getRate());
-                //Log.d(TAG, "articles title pos 0:: " + response.body().getArticles().get(0).getTitle());
+                if (apiEndPoint.startsWith(AppConstant.PRODUCT_DETAILS_BY_ID)) {
+                    Rating rating = gson.fromJson(response.body().getRating().toString(), Rating.class);
+                    Log.d(TAG, "rating :: " + rating.getRate());
+                    //Log.d(TAG, "articles title pos 0:: " + response.body().getArticles().get(0).getTitle());
+                }
             }
         }
 
